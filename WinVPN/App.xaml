@@ -1,0 +1,27 @@
+﻿<Application x:Class="WinVPN.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WinVPN"
+             xmlns:view="clr-namespace:WinVPN.MVVM.View"
+             xmlns:vms="clr-namespace:WinVPN.MVVM.ViewModel"
+             StartupUri="MVVM/View/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--Themes-->
+                <ResourceDictionary Source="Themes/TitlebarButton.Nord.xaml" />
+                <ResourceDictionary Source="Themes/MenuButton.Nord.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!--Register views -->
+            <DataTemplate DataType="{x:Type vms:ProtectionViewModel}">
+                <view:ProtectionView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vms:SettingsViewModel}">
+                <view:SettingsView />
+            </DataTemplate>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
