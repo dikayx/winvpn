@@ -11,6 +11,7 @@
                 <!--Themes-->
                 <ResourceDictionary Source="Themes/TitlebarButton.Nord.xaml" />
                 <ResourceDictionary Source="Themes/MenuButton.Nord.xaml" />
+                <ResourceDictionary Source="Themes/ConnectButton.Nord.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
             <!--Register views -->

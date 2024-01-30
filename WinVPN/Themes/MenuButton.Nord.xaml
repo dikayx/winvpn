@@ -1,4 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:extensions="clr-namespace:WinVPN.Core"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="{x:Type RadioButton}">
@@ -26,7 +27,7 @@
                             Margin="4">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="{TemplateBinding Padding}"
-                                       Text="Text"/>
+                                       Text="{Binding Path=(extensions:Extensions.Icon), RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
                             <ContentPresenter VerticalAlignment="Center"
                                               Margin="0,0,0,2"/>
                         </StackPanel>

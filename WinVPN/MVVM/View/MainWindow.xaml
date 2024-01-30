@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WinVPN" xmlns:viewmodel="clr-namespace:WinVPN.MVVM.ViewModel"
+        xmlns:local="clr-namespace:WinVPN" 
+        xmlns:extensions="clr-namespace:WinVPN.Core"
+        xmlns:viewmodel="clr-namespace:WinVPN.MVVM.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         WindowStyle="None"
@@ -92,19 +94,28 @@
 
             <StackPanel>
                 <RadioButton Content="VPN"
-                             FontFamily="16"
+                             extensions:Extensions.Icon="&#128737;"
+                             FontSize="16"
+                             Padding="7.6,3.5,8,0"
                              FontWeight="Normal"
                              Foreground="LightGray"
                              IsChecked="True"
                              Command="{Binding ShowProtectionView}"/>
-                
-                <RadioButton Content="VPN"
-                             FontFamily="16"
+
+                <!-- TODO: Implement TOR View -->
+                <RadioButton Content="Tor"
+                             extensions:Extensions.Icon="&#128373;"
+                             FontSize="16"
+                             Padding="7.6,3.5,8,0"
                              FontWeight="Normal"
-                             Foreground="LightGray"/>
-                
+                             Foreground="LightGray"
+                             IsChecked="True"
+                             Command="{Binding ShowProtectionView}"/>
+
                 <RadioButton Content="Settings"
-                             FontFamily="16"
+                             extensions:Extensions.Icon="⚙"
+                             FontSize="16"
+                             Padding="6,3.5,4.7,0"
                              FontWeight="Normal"
                              Foreground="LightGray"
                              Command="{Binding ShowSettingsView}"/>
