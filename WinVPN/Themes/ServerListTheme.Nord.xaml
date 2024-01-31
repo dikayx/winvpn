@@ -1,0 +1,121 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style TargetType="{x:Type ListView}">
+        <Setter Property="Background"
+                Value="#252525"/>
+
+        <Setter Property="Foreground"
+                Value="White"/>
+
+        <Setter Property="ScrollViewer.CanContentScroll"
+                Value="False"/>
+
+        <Setter Property="BorderThickness"
+                Value="0"/>
+
+        <Setter Property="FontFamily"
+                Value="Consolas"/>
+    </Style>
+
+    <Style TargetType="ListViewItem">
+        <Setter Property="Cursor"
+                Value="Hand"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="4"
+                                MinHeight="25"
+                                Background="{TemplateBinding Background}">
+
+                        <Image Width="34" 
+                               RenderOptions.BitmapScalingMode="Fant"
+                               Source="https://i.imgur.com/tX2FzGr.png"/>
+
+                        <TextBlock Text="{Binding Country}"
+                                   Margin="4,0,0,0"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Background"
+                Value="Transparent"/>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#1E1E1E"/>
+            </Trigger>
+
+            <Trigger Property="IsSelected"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#1E1E1E"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type RepeatButton}">
+        <Setter Property="Background"
+                Value="Transparent"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <Rectangle Fill="{TemplateBinding Background}"
+                               Height="{TemplateBinding Height}"
+                                 Width="{TemplateBinding Width}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Thumb}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Rectangle Fill="#424242"
+                               Height="{TemplateBinding Height}"
+                                 Width="{TemplateBinding Width}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ScrollBar}">
+        <Setter Property="Width"
+                Value="12"/>
+        <Setter Property="MinWidth"
+                Value="12"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                    <Grid>
+                        <Track x:Name="PART_Track"
+                               IsDirectionReversed="True">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}"/>
+                            </Track.DecreaseRepeatButton>
+
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}"/>
+                            </Track.IncreaseRepeatButton>
+
+                            <!--Scrollbar-->
+                            <Track.Thumb>
+                                <Thumb/>
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

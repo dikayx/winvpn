@@ -109,7 +109,7 @@
                              Padding="7.6,3.5,8,0"
                              FontWeight="Normal"
                              Foreground="LightGray"
-                             IsChecked="True"
+                             IsChecked="False"
                              Command="{Binding ShowProtectionView}"/>
 
                 <RadioButton Content="Settings"
