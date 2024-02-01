@@ -32,7 +32,7 @@
 
                         <Image Width="34" 
                                RenderOptions.BitmapScalingMode="Fant"
-                               Source="https://i.imgur.com/tX2FzGr.png"/>
+                               Source="{Binding Flag}"/>
 
                         <TextBlock Text="{Binding Country}"
                                    Margin="4,0,0,0"

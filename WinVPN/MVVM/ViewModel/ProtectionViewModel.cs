@@ -18,7 +18,8 @@ namespace WinVPN.MVVM.ViewModel
             {
                 Servers.Add(new ServerModel
                 {
-                    Country = "USA"
+                    Country = "USA",
+                    Flag = "https://i.imgur.com/tX2FzGr.png",
                 });
             }
         }
