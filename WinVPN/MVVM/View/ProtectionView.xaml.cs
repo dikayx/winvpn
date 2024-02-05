@@ -24,5 +24,12 @@ namespace WinVPN.MVVM.View
         {
             InitializeComponent();
         }
+
+        // Set the password in the ProtectionViewModel whenever the password changes
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext != null)
+            { ((dynamic)this.DataContext).Password = ((PasswordBox)sender).SecurePassword; }
+        }
     }
 }
