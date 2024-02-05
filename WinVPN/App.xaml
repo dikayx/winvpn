@@ -19,6 +19,8 @@
             <DataTemplate DataType="{x:Type vms:ProtectionViewModel}">
                 <view:ProtectionView />
             </DataTemplate>
+            
+            <!--TODO: Add Tor view?-->
 
             <DataTemplate DataType="{x:Type vms:SettingsViewModel}">
                 <view:SettingsView />
