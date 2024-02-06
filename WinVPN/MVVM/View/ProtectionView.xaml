@@ -49,7 +49,7 @@
               BorderThickness="0"
               ScrollViewer.CanContentScroll="False"/>
 
-            <TextBlock Text="{Binding ConnectionStatus}"
+            <TextBlock Text="{Binding VpnConnectionStatus}"
                Foreground="White"
                Grid.Row="1"
                HorizontalAlignment="Center"

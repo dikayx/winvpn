@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using WinVPN.Core;
 
 namespace WinVPN.MVVM.ViewModel
@@ -17,6 +12,9 @@ namespace WinVPN.MVVM.ViewModel
         public RelayCommand MinimizeWindowCommand { get; set; }
         public RelayCommand ShowProtectionView { get; set; }
         public RelayCommand ShowSettingsView { get; set; }
+
+        // Services
+        private ConnectionService _connectionService;
 
 
         private object _currentView;
@@ -37,6 +35,8 @@ namespace WinVPN.MVVM.ViewModel
 
         public MainViewModel()
         {
+            _connectionService = new ConnectionService();
+
             ProtectionVM = new ProtectionViewModel();
             SettingsVM = new SettingsViewModel();
             CurrentView = ProtectionVM;
@@ -44,7 +44,17 @@ namespace WinVPN.MVVM.ViewModel
             Application.Current.MainWindow.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
 
             MoveWindowCommand = new RelayCommand(o => Application.Current.MainWindow.DragMove());
-            ShutdownWindowCommand = new RelayCommand(o => Application.Current.Shutdown());
+            ShutdownWindowCommand = new RelayCommand(o =>
+            {
+                var status = _connectionService.Disconnect();
+                if (status == ConnectionStatus.Connected)
+                {
+                    MessageBox.Show("Could not close the existing connection.\nTry to disconnect manually using 'rasidial /d'", 
+                        "WinVPN", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                Application.Current.Shutdown();
+            });
             // TODO: May need rework
             //MaximizeWindowCommand = new RelayCommand(o => Application.Current.MainWindow.WindowState ^= WindowState.Maximized);
             //MinimizeWindowCommand = new RelayCommand(o => Application.Current.MainWindow.WindowState = WindowState.Minimized);

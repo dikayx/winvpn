@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using WinVPN.Core;
 using WinVPN.MVVM.Model;
 
@@ -18,19 +11,37 @@ namespace WinVPN.MVVM.ViewModel
     internal class ProtectionViewModel : ObservableObject, INotifyPropertyChanged
     {
         public ObservableCollection<ServerModel> Servers { get; set; }
+        private ServerBuilder _serverBuilder;
         private ConnectionService _connectionService;
 
-        // TODO: Make status an enum
-        private string _connectionStatus;
-        public string ConnectionStatus
+        private ConnectionStatus _vpnConnectionStatus;
+        public string VpnConnectionStatus
         {
-            get => _connectionStatus ?? "Not connected";
+            get
+            {
+                return _vpnConnectionStatus switch
+                {
+                    ConnectionStatus.Connected => "Connected",
+                    ConnectionStatus.NotConnected => "Not Connected",
+                    ConnectionStatus.InvalidUsernameOrPassword => "Invalid Username Or Password",
+                    ConnectionStatus.ConnectionError => $"Connection Error",
+                    _ => "Not Connected",
+                };
+            }
             set
             {
-                _connectionStatus = value;
+                _vpnConnectionStatus = value switch
+                {
+                    "Connected" => ConnectionStatus.Connected,
+                    "Not Connected" => ConnectionStatus.NotConnected,
+                    "InvalidUsernameOrPassword" => ConnectionStatus.InvalidUsernameOrPassword,
+                    "ConnectionError" => ConnectionStatus.ConnectionError,
+                    _ => ConnectionStatus.NotConnected,
+                };
                 OnPropertyChanged();
             }
         }
+
         public RelayCommand ConnectCommand { get; set; }
 
         private ServerModel _selectedServer;
@@ -80,62 +91,52 @@ namespace WinVPN.MVVM.ViewModel
 
         public ProtectionViewModel()
         {
+            // Create a new ServerBuilder
+            _serverBuilder = new ServerBuilder();
+            Servers = _serverBuilder.GetServers();
+
             // Create a new ConnectionService
             _connectionService = new ConnectionService();
-            Servers = _connectionService.GetServers();
 
             ConnectCommand = new RelayCommand(o =>
             {
                 Task.Run(() =>
                 {
+                    if (VpnConnectionStatus == "Connected")
+                    {
+                        VpnConnectionStatus = "Disconnecting...";
+                        ConnectBtnContent = "Disconnecting...";
+                        _connectionService.Disconnect();
+                        VpnConnectionStatus = "Not Connected";
+                        ConnectBtnContent = "Connect";
+                        return;
+                    }
+
                     if (SelectedServer == null)
                     {
                         MessageBox.Show("Please select a server!");
                         return;
                     }
 
-                    string passString = new System.Net.NetworkCredential(string.Empty, Password).Password;
-
-                    ConnectionStatus = "Connecting...";
+                    //VpnConnectionStatus = "Connecting...";
                     ConnectBtnContent = "Connecting...";
 
-                    var process = new Process();
-                    process.StartInfo.FileName = "cmd.exe";
-                    process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
-                    string connectionString = $"/c rasdial {SelectedServer.Id} {Username} {passString} /phonebook:./VPN/{SelectedServer.Id}.pbk";
-                    Debug.WriteLine(connectionString);
-                    process.StartInfo.Arguments = connectionString;
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.CreateNoWindow = true;
+                    ConnectionStatus status = _connectionService.Connect(SelectedServer, Username, Password);
+                    VpnConnectionStatus = status.ToString();
 
-                    process.Start();
-                    process.WaitForExit();
-
-                    switch (process.ExitCode)
+                    // Update the button content
+                    if (status == ConnectionStatus.Connected)
                     {
-                        case 0:
-                            Debug.WriteLine("Success!");
-                            ConnectionStatus = "Connected!";
-                            ConnectBtnContent = "Disconnect";
-                            break;
-                        case 691:
-                            Debug.WriteLine("Invalid username or password!");
-                            ConnectionStatus = "Invalid username or password!";
-                            ConnectBtnContent = "Connect";
-                            break;
-                        default:
-                            Debug.WriteLine($"Connection error: {process.ExitCode}");
-                            ConnectionStatus = $"Connection error: {process.ExitCode}";
-                            ConnectBtnContent = "Connect";
-                            break;
+                        ConnectBtnContent = "Disconnect";
                     }
-
-                    // TODO: Disconnect when app is closed (using rasdial /d)
+                    else
+                    {
+                        ConnectBtnContent = "Connect";
+                    }
                 });
             });
         }
 
-        // Debug method: Print the server name that the user has selected in the list
         private void OnServerSelected()
         {
             if (SelectedServer != null)

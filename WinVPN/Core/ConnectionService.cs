@@ -1,92 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Security;
 using WinVPN.MVVM.Model;
 
 namespace WinVPN.Core
 {
     public class ConnectionService
     {
-        private ObservableCollection<ServerModel> Servers { get; set; }
+        private ConnectionStatus _connectionStatus;
 
-        public ConnectionService()
+        public ConnectionStatus Connect(ServerModel server, string username, SecureString password)
         {
-            var username = "vpnbook";
-            var suffix = ".vpnbook.com";
+            string passwordString = new System.Net.NetworkCredential(string.Empty, password).Password;
 
-            // TODO: This whole thing should be refactored into something less confusing...
-            var ids = new List<string> { "USA1", "USA2", "CA196", "DE220", "FR231", "PL140", "UK68" };
-            var countries = new Dictionary<string, string> // Key: Country, Value: Flag URL
+            var process = new Process();
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
+            string connectionString = $"/c rasdial {server.Id} {username} {passwordString} /phonebook:./VPN/{server.Id}.pbk";
+            Debug.WriteLine(connectionString);
+            process.StartInfo.Arguments = connectionString;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+
+            process.Start();
+            process.WaitForExit();
+
+            
+            switch (process.ExitCode)
             {
-                { "USA1", "https://i.imgur.com/tX2FzGr.png" },
-                { "USA2", "https://i.imgur.com/tX2FzGr.png" },
-                { "Canada", "https://i.imgur.com/VIxuFmK.png" },
-                { "Germany", "https://i.imgur.com/l66r6qD.png" },
-                { "France", "https://i.imgur.com/XohHXyD.png" },
-                { "Poland", "https://i.imgur.com/k6ie3Ra.png" },
-                { "UK", "https://i.imgur.com/QW2YV9c.png" },
-            };
-
-            Servers = new ObservableCollection<ServerModel>();
-
-            foreach (var country in countries)
-            {
-                var id = ids[countries.Keys.ToList().IndexOf(country.Key)];
-                // Create a new server
-                Servers.Add(new ServerModel
-                {
-                    Id = id,
-                    Username = username,
-                    Server = $"{id}{suffix}",
-                    Country = country.Key,
-                    Flag = country.Value,
-                });
-
-                // Create a .pbk file for each server
-                CreatePbkFile(Servers.Last());
+                case 0:
+                    Debug.WriteLine("Success!");
+                    _connectionStatus = ConnectionStatus.Connected;
+                    break;
+                case 691:
+                    Debug.WriteLine("Invalid username or password!");
+                    _connectionStatus = ConnectionStatus.InvalidUsernameOrPassword;
+                    break;
+                case 868:
+                    Debug.WriteLine("Host unreachable!");
+                    _connectionStatus = ConnectionStatus.HostUnreachable;
+                    break;
+                default:
+                    Debug.WriteLine($"Connection error: {process.ExitCode}");
+                    _connectionStatus = ConnectionStatus.ConnectionError;
+                    break;
             }
+
+            return _connectionStatus;
         }
 
-        private void CreatePbkFile(ServerModel server)
+        public ConnectionStatus Disconnect()
         {
-            var filename = server.Id; // "USA1"
-            var address = server.Server; // "USA1.vpnbook.com"
+            var process = new Process();
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
+            process.StartInfo.Arguments = $"/c rasdial /d";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
 
-            Debug.WriteLine(Directory.GetCurrentDirectory());
+            process.Start();
+            process.WaitForExit();
 
-            var folderpath = Path.Combine(Directory.GetCurrentDirectory(), "VPN");
-            var pbkpath = Path.Combine(folderpath, $"{filename}.pbk");
-
-            if (!Directory.Exists(folderpath))
+            if (process.ExitCode == 0)
             {
-                Directory.CreateDirectory(folderpath);
+                Debug.WriteLine("Disconnected!");
+                _connectionStatus = ConnectionStatus.NotConnected;
+            }
+            else
+            {
+                Debug.WriteLine($"Disconnection error: {process.ExitCode}");
+                _connectionStatus = ConnectionStatus.ConnectionError;
             }
 
-            if (File.Exists(pbkpath))
-            {
-                Debug.WriteLine("File already exists, skipping...");
-                return;
-            }
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"[{filename}]");
-            sb.AppendLine("MEDIA=rastapi");
-            sb.AppendLine("Port=VPN2-0");
-            sb.AppendLine("Device=WAN Miniport (IKEv2)");
-            sb.AppendLine("DEVICE=vpn");
-            sb.AppendLine($"PhoneNumber={address}");
-
-            File.WriteAllText(pbkpath, sb.ToString());
-        }
-
-        public ObservableCollection<ServerModel> GetServers()
-        {
-            return Servers;
+            return _connectionStatus;
         }
     }
 }
