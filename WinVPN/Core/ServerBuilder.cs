@@ -14,9 +14,8 @@ namespace WinVPN.Core
         {
             var username = "vpnbook";
             var suffix = ".vpnbook.com";
-
-            // TODO: This whole thing should be refactored into something less confusing...
             var ids = new List<string> { "US1", "US2", "CA196", "DE220", "FR231", "PL140", "UK68" };
+
             var countries = new Dictionary<string, string> // Key: Country, Value: Flag URL
             {
                 { "USA1", "https://i.imgur.com/tX2FzGr.png" },
@@ -50,8 +49,8 @@ namespace WinVPN.Core
 
         private void CreatePbkFile(ServerModel server)
         {
-            var filename = server.Id; // "USA1"
-            var address = server.Server; // "USA1.vpnbook.com"
+            var filename = server.Id; // "US1"
+            var address = server.Server; // "US1.vpnbook.com"
 
             Debug.WriteLine(Directory.GetCurrentDirectory());
 

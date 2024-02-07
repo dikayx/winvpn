@@ -8,7 +8,7 @@ namespace WinVPN.Core
     {
         private ConnectionStatus _connectionStatus;
 
-        public ConnectionStatus Connect(ServerModel server, string username, SecureString password)
+        public ConnectionStatus Connect(ServerModel server, string username, SecureString? password)
         {
             string passwordString = new System.Net.NetworkCredential(string.Empty, password).Password;
 
@@ -16,6 +16,8 @@ namespace WinVPN.Core
             process.StartInfo.FileName = "cmd.exe";
             process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
             string connectionString = $"/c rasdial {server.Id} {username} {passwordString} /phonebook:./VPN/{server.Id}.pbk";
+
+            // TODO: Remove debug
             Debug.WriteLine(connectionString);
             process.StartInfo.Arguments = connectionString;
             process.StartInfo.UseShellExecute = false;
@@ -23,25 +25,25 @@ namespace WinVPN.Core
 
             process.Start();
             process.WaitForExit();
-
             
+            // TODO: Add a logger instead of Debug.WriteLine
             switch (process.ExitCode)
             {
                 case 0:
                     Debug.WriteLine("Success!");
-                    _connectionStatus = ConnectionStatus.Connected;
+                    _connectionStatus = ConnectionStatus.CONNECTED;
                     break;
                 case 691:
                     Debug.WriteLine("Invalid username or password!");
-                    _connectionStatus = ConnectionStatus.InvalidUsernameOrPassword;
+                    _connectionStatus = ConnectionStatus.INVALID_CREDENTIALS;
                     break;
                 case 868:
                     Debug.WriteLine("Host unreachable!");
-                    _connectionStatus = ConnectionStatus.HostUnreachable;
+                    _connectionStatus = ConnectionStatus.HOST_UNREACHABLE;
                     break;
                 default:
                     Debug.WriteLine($"Connection error: {process.ExitCode}");
-                    _connectionStatus = ConnectionStatus.ConnectionError;
+                    _connectionStatus = ConnectionStatus.CONNECTION_ERROR;
                     break;
             }
 
@@ -63,12 +65,12 @@ namespace WinVPN.Core
             if (process.ExitCode == 0)
             {
                 Debug.WriteLine("Disconnected!");
-                _connectionStatus = ConnectionStatus.NotConnected;
+                _connectionStatus = ConnectionStatus.NOT_CONNECTED;
             }
             else
             {
                 Debug.WriteLine($"Disconnection error: {process.ExitCode}");
-                _connectionStatus = ConnectionStatus.ConnectionError;
+                _connectionStatus = ConnectionStatus.CONNECTION_ERROR;
             }
 
             return _connectionStatus;

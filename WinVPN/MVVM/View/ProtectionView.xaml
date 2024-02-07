@@ -49,7 +49,7 @@
               BorderThickness="0"
               ScrollViewer.CanContentScroll="False"/>
 
-            <TextBlock Text="{Binding VpnConnectionStatus}"
+            <TextBlock Text="{Binding ConnectionStatusDescription}"
                Foreground="White"
                Grid.Row="1"
                HorizontalAlignment="Center"
@@ -87,7 +87,7 @@
 
         <Button Width="250"
                 Height="35"
-                Content="{Binding ConnectBtnContent}"
+                Content="{Binding ConnectButtonContent}"
                 Grid.Row="1"
                 Margin="0,50,0,0"
                 Style="{StaticResource ConnectButtonStyle}"

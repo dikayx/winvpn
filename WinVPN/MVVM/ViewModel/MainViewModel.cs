@@ -47,7 +47,7 @@ namespace WinVPN.MVVM.ViewModel
             ShutdownWindowCommand = new RelayCommand(o =>
             {
                 var status = _connectionService.Disconnect();
-                if (status == ConnectionStatus.Connected)
+                if (status == ConnectionStatus.CONNECTED)
                 {
                     MessageBox.Show("Could not close the existing connection.\nTry to disconnect manually using 'rasidial /d'", 
                         "WinVPN", MessageBoxButton.OK, MessageBoxImage.Warning);

@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Security;
 using System.Windows;
 using WinVPN.Core;
@@ -11,41 +10,12 @@ namespace WinVPN.MVVM.ViewModel
     internal class ProtectionViewModel : ObservableObject, INotifyPropertyChanged
     {
         public ObservableCollection<ServerModel> Servers { get; set; }
+        public RelayCommand ConnectCommand { get; set; }
+
         private ServerBuilder _serverBuilder;
         private ConnectionService _connectionService;
 
-        private ConnectionStatus _vpnConnectionStatus;
-        public string VpnConnectionStatus
-        {
-            get
-            {
-                return _vpnConnectionStatus switch
-                {
-                    ConnectionStatus.Connected => "Connected",
-                    ConnectionStatus.NotConnected => "Not Connected",
-                    ConnectionStatus.InvalidUsernameOrPassword => "Invalid Username Or Password",
-                    ConnectionStatus.ConnectionError => $"Connection Error",
-                    _ => "Not Connected",
-                };
-            }
-            set
-            {
-                _vpnConnectionStatus = value switch
-                {
-                    "Connected" => ConnectionStatus.Connected,
-                    "Not Connected" => ConnectionStatus.NotConnected,
-                    "InvalidUsernameOrPassword" => ConnectionStatus.InvalidUsernameOrPassword,
-                    "ConnectionError" => ConnectionStatus.ConnectionError,
-                    _ => ConnectionStatus.NotConnected,
-                };
-                OnPropertyChanged();
-            }
-        }
-
-        public RelayCommand ConnectCommand { get; set; }
-
         private ServerModel _selectedServer;
-
         public ServerModel SelectedServer
         {
             get => _selectedServer;
@@ -53,12 +23,24 @@ namespace WinVPN.MVVM.ViewModel
             {
                 _selectedServer = value;
                 OnPropertyChanged();
-                OnServerSelected();
             }
         }
 
-        private string _username;
+        private ConnectionStatus _status;
+        public ConnectionStatus Status
+        {
+            get => _status;
+            set
+            {
+                _status = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ConnectionStatusDescription));
+            }
+        }
+        // Additional property for a user-friendly status description
+        public string ConnectionStatusDescription => Status.GetDescription();
 
+        private string _username;
         public string Username
         {
             get => _username ?? "vpnbook"; // Default username
@@ -74,41 +56,37 @@ namespace WinVPN.MVVM.ViewModel
 
         public SecureString Password { private get; set; }
 
-        private string _connectBtnContent = "Connect";
-
-        public string ConnectBtnContent
+        private string _connectButtonContent = "Connect";
+        public string ConnectButtonContent
         {
-            get => _connectBtnContent;
+            get => _connectButtonContent;
             set
             {
-                if (_connectBtnContent != value)
+                if (_connectButtonContent != value)
                 {
-                    _connectBtnContent = value;
-                    OnPropertyChanged(nameof(ConnectBtnContent));
+                    _connectButtonContent = value;
+                    OnPropertyChanged(nameof(ConnectButtonContent));
                 }
             }
         }
 
         public ProtectionViewModel()
         {
-            // Create a new ServerBuilder
             _serverBuilder = new ServerBuilder();
             Servers = _serverBuilder.GetServers();
-
-            // Create a new ConnectionService
             _connectionService = new ConnectionService();
 
             ConnectCommand = new RelayCommand(o =>
             {
                 Task.Run(() =>
                 {
-                    if (VpnConnectionStatus == "Connected")
+                    if (Status == ConnectionStatus.CONNECTED)
                     {
-                        VpnConnectionStatus = "Disconnecting...";
-                        ConnectBtnContent = "Disconnecting...";
+                        Status = ConnectionStatus.DISCONNECTING;
+                        ConnectButtonContent = "Disconnecting...";
                         _connectionService.Disconnect();
-                        VpnConnectionStatus = "Not Connected";
-                        ConnectBtnContent = "Connect";
+                        Status = ConnectionStatus.NOT_CONNECTED;
+                        ConnectButtonContent = "Connect";
                         return;
                     }
 
@@ -118,32 +96,19 @@ namespace WinVPN.MVVM.ViewModel
                         return;
                     }
 
-                    //VpnConnectionStatus = "Connecting...";
-                    ConnectBtnContent = "Connecting...";
+                    ConnectButtonContent = "Connecting...";
 
-                    ConnectionStatus status = _connectionService.Connect(SelectedServer, Username, Password);
-                    VpnConnectionStatus = status.ToString();
-
-                    // Update the button content
-                    if (status == ConnectionStatus.Connected)
+                    Status = _connectionService.Connect(SelectedServer, Username, Password);
+                    if (Status == ConnectionStatus.CONNECTED)
                     {
-                        ConnectBtnContent = "Disconnect";
+                        ConnectButtonContent = "Disconnect";
                     }
                     else
                     {
-                        ConnectBtnContent = "Connect";
+                        ConnectButtonContent = "Connect";
                     }
                 });
             });
-        }
-
-        private void OnServerSelected()
-        {
-            if (SelectedServer != null)
-            {
-                Debug.WriteLine($"Selected Server: {SelectedServer.Country}");
-                // Add your logic here to handle the selected server
-            }
         }
     }
 }
