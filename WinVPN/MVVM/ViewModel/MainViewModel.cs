@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using WinVPN.Core;
+using WinVPN.MVVM.View;
 
 namespace WinVPN.MVVM.ViewModel
 {
@@ -12,6 +13,7 @@ namespace WinVPN.MVVM.ViewModel
         public RelayCommand MinimizeWindowCommand { get; set; }
         public RelayCommand ShowProtectionView { get; set; }
         public RelayCommand ShowSettingsView { get; set; }
+        public RelayCommand ShowTorView { get; set; }
 
         // Services
         private ConnectionService _connectionService;
@@ -31,6 +33,7 @@ namespace WinVPN.MVVM.ViewModel
 
         public ProtectionViewModel ProtectionVM { get; set; }
         public SettingsViewModel SettingsVM { get; set; }
+        public TorViewModel TorVM { get; set; }
 
 
         public MainViewModel()
@@ -39,6 +42,7 @@ namespace WinVPN.MVVM.ViewModel
 
             ProtectionVM = new ProtectionViewModel();
             SettingsVM = new SettingsViewModel();
+            TorVM = new TorViewModel();
             CurrentView = ProtectionVM;
 
             Application.Current.MainWindow.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
@@ -73,6 +77,7 @@ namespace WinVPN.MVVM.ViewModel
 
             ShowProtectionView = new RelayCommand(o => CurrentView = ProtectionVM);
             ShowSettingsView = new RelayCommand(o => CurrentView = SettingsVM);
+            ShowTorView = new RelayCommand(o => CurrentView = TorVM);
         }
     }
 }

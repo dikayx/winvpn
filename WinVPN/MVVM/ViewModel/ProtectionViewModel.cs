@@ -9,11 +9,13 @@ namespace WinVPN.MVVM.ViewModel
 {
     internal class ProtectionViewModel : ObservableObject, INotifyPropertyChanged
     {
-        public ObservableCollection<ServerModel> Servers { get; set; }
-        public RelayCommand ConnectCommand { get; set; }
-
+        // Services
         private ServerBuilder _serverBuilder;
         private ConnectionService _connectionService;
+
+        // Bindable properties
+        public ObservableCollection<ServerModel> Servers { get; set; }
+        public RelayCommand ConnectCommand { get; set; }
 
         private ServerModel _selectedServer;
         public ServerModel SelectedServer

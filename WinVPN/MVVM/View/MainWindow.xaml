@@ -110,7 +110,7 @@
                              FontWeight="Normal"
                              Foreground="LightGray"
                              IsChecked="False"
-                             Command="{Binding ShowProtectionView}"/>
+                             Command="{Binding ShowTorView}"/>
 
                 <RadioButton Content="Settings"
                              extensions:Extensions.Icon="⚙"
