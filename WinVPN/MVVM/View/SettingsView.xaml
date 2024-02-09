@@ -4,14 +4,96 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WinVPN.MVVM.View"
+             xmlns:viewmodel="clr-namespace:WinVPN.MVVM.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#1E1E1E">
+
+    <UserControl.DataContext>
+        <viewmodel:SettingsViewModel />
+    </UserControl.DataContext>
+
     <Grid>
-        <TextBlock Text="SettingsView"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Foreground="LightGray"
-                   FontSize="28"/>
+        <StackPanel VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Background="Transparent">
+            <!-- Settings Header -->
+            <TextBlock Text="Settings" 
+                       Foreground="White" 
+                       FontSize="24" 
+                       Margin="0,0,0,20"/>
+            
+            <TextBlock Text="App settings may be added here." 
+                       FontStyle="Italic"
+                       Foreground="White" 
+                       Margin="0,0,0,10"/>
+
+            <!-- Option 1 -->
+            <StackPanel Orientation="Horizontal" 
+                        Margin="0,0,0,10">
+                <TextBlock Text="{Binding Option1Text}"
+                           Foreground="White" 
+                           Width="150"/>
+                
+                <CheckBox HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding Option1IsChecked}"/>
+            </StackPanel>
+
+            <!-- Option 2 -->
+            <StackPanel Orientation="Horizontal" 
+                        Margin="0,0,0,10">
+                <TextBlock Text="{Binding Option2Text}"
+                           Foreground="White" 
+                           Width="150"/>
+                
+                <CheckBox HorizontalAlignment="Left" 
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding Option2IsChecked}"/>
+            </StackPanel>
+
+            <!-- Option 3 -->
+            <StackPanel Orientation="Horizontal" 
+                        Margin="0,0,0,10">
+                <TextBlock Text="{Binding Option3Text}"
+                           Foreground="White" 
+                           Width="150"/>
+                
+                <CheckBox HorizontalAlignment="Left" 
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding Option3IsChecked}"/>
+            </StackPanel>
+
+            <!-- Separator -->
+            <Separator Height="1" 
+                       Background="LightGray" 
+                       Margin="0,20,0,20"/>
+
+            <!-- About Section -->
+            <TextBlock Text="About" 
+                       Foreground="White" 
+                       FontSize="24" 
+                       Margin="0,0,0,20"/>
+
+            <TextBlock Text="{Binding AboutText}"
+                       Foreground="White" 
+                       Margin="0,0,0,10"/>
+
+            <TextBlock Foreground="White" Margin="0,0,0,10">
+                <Run Text="Check out the " />
+                <Hyperlink NavigateUri="https://github.com/dan-koller/winvpn"
+                           RequestNavigate="Hyperlink_RequestNavigate">
+                    <TextBlock Text="repo" 
+                               TextDecorations="Underline"/>
+                </Hyperlink>
+                <Run Text=" or " />
+                <Hyperlink NavigateUri="https://github.com/dan-koller/winvpn/issues"
+                           RequestNavigate="Hyperlink_RequestNavigate">
+                    <TextBlock Text="open an issue" 
+                               TextDecorations="Underline"/>
+                </Hyperlink>
+                <Run Text="." />
+            </TextBlock>
+        </StackPanel>
     </Grid>
 </UserControl>
