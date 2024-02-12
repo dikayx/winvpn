@@ -16,8 +16,7 @@
     <Window.DataContext>
         <viewmodel:MainViewModel />
     </Window.DataContext>
-    
-    
+
     <DockPanel Background="#1E1E1E"
                Margin="7">
 
@@ -102,7 +101,6 @@
                              IsChecked="True"
                              Command="{Binding ShowProtectionView}"/>
 
-                <!-- TODO: Implement TOR View -->
                 <RadioButton Content="Tor"
                              extensions:Extensions.Icon="&#128373;"
                              FontSize="16"
@@ -120,7 +118,7 @@
                              Foreground="LightGray"
                              Command="{Binding ShowSettingsView}"/>
             </StackPanel>
-            
+
         </Border>
 
         <ContentPresenter Content="{Binding CurrentView}"/>
