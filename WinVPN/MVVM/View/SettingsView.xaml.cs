@@ -6,7 +6,7 @@ using System.Windows.Navigation;
 namespace WinVPN.MVVM.View
 {
     /// <summary>
-    /// Interaktionslogik für SettingsView.xaml
+    /// Interaction logic for SettingsView.xaml
     /// </summary>
     public partial class SettingsView : UserControl
     {

@@ -87,7 +87,7 @@
                                TextDecorations="Underline"/>
                 </Hyperlink>
                 <Run Text=" or " />
-                <Hyperlink NavigateUri="https://github.com/dan-koller/winvpn/issues"
+                <Hyperlink NavigateUri="https://github.com/dan-koller/winvpn/issues/new"
                            RequestNavigate="Hyperlink_RequestNavigate">
                     <TextBlock Text="open an issue" 
                                TextDecorations="Underline"/>

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using WinVPN.Core;
-using WinVPN.MVVM.View;
 
 namespace WinVPN.MVVM.ViewModel
 {
@@ -16,10 +15,10 @@ namespace WinVPN.MVVM.ViewModel
         public RelayCommand ShowTorView { get; set; }
 
         // Services
-        private ConnectionService _connectionService;
+        private readonly ConnectionService _connectionService;
 
 
-        private object _currentView;
+        private object _currentView = null!;
 
         public object CurrentView
         {
@@ -47,6 +46,7 @@ namespace WinVPN.MVVM.ViewModel
 
             Application.Current.MainWindow.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
 
+            // Commands
             MoveWindowCommand = new RelayCommand(o => Application.Current.MainWindow.DragMove());
             ShutdownWindowCommand = new RelayCommand(o =>
             {
@@ -59,9 +59,6 @@ namespace WinVPN.MVVM.ViewModel
                 }
                 Application.Current.Shutdown();
             });
-            // TODO: May need rework
-            //MaximizeWindowCommand = new RelayCommand(o => Application.Current.MainWindow.WindowState ^= WindowState.Maximized);
-            //MinimizeWindowCommand = new RelayCommand(o => Application.Current.MainWindow.WindowState = WindowState.Minimized);
             MaximizeWindowCommand = new RelayCommand(o =>
             {
                 if (Application.Current.MainWindow.WindowState == WindowState.Maximized)
@@ -75,6 +72,7 @@ namespace WinVPN.MVVM.ViewModel
             });
             MinimizeWindowCommand = new RelayCommand(o => Application.Current.MainWindow.WindowState = WindowState.Minimized);
 
+            // Views
             ShowProtectionView = new RelayCommand(o => CurrentView = ProtectionVM);
             ShowSettingsView = new RelayCommand(o => CurrentView = SettingsVM);
             ShowTorView = new RelayCommand(o => CurrentView = TorVM);
