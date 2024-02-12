@@ -27,7 +27,7 @@ namespace WinVPN.Core
                 { "UK", "https://i.imgur.com/QW2YV9c.png" },
             };
 
-            Servers = new ObservableCollection<ServerModel>();
+            Servers = [];
 
             foreach (var country in countries)
             {
@@ -47,12 +47,10 @@ namespace WinVPN.Core
             }
         }
 
-        private void CreatePbkFile(ServerModel server)
+        private static void CreatePbkFile(ServerModel server)
         {
             var filename = server.Id; // "US1"
             var address = server.Server; // "US1.vpnbook.com"
-
-            Debug.WriteLine(Directory.GetCurrentDirectory());
 
             var folderpath = Path.Combine(Directory.GetCurrentDirectory(), "VPN");
             var pbkpath = Path.Combine(folderpath, $"{filename}.pbk");
@@ -64,9 +62,11 @@ namespace WinVPN.Core
 
             if (File.Exists(pbkpath))
             {
-                Debug.WriteLine("File already exists, skipping...");
+                FileLogger.Log($"File {filename}.pbk already exists, skipping...");
                 return;
             }
+
+            FileLogger.Log($"Creating {filename}.pbk file in {folderpath}");
 
             var sb = new StringBuilder();
             sb.AppendLine($"[{filename}]");

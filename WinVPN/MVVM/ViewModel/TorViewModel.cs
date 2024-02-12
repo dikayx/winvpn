@@ -11,7 +11,7 @@ namespace WinVPN.MVVM.ViewModel
         private string? _torExecutablePath;
 
         // Bindable properties
-        public RelayCommand LaunchCommand { get; set; }
+        public RelayCommand? LaunchCommand { get; set; }
         private string _launchTorButtonContent = "Launch Tor Browser";
         public string LaunchTorButton
         {
@@ -59,7 +59,6 @@ namespace WinVPN.MVVM.ViewModel
         {
             get
             {
-                // TODO: Change variable name to IsTorEnabled?
                 if (IsTorLaunchButtonEnabled)
                 {
                     return "https://www.torproject.org/static/images/tor-logo/Color.png";
@@ -86,7 +85,7 @@ namespace WinVPN.MVVM.ViewModel
                 {
                     Task.Run(() =>
                     {
-                        Debug.WriteLine("Clicked on Launch Tor Browser button!");
+                        FileLogger.Log("Launching Tor Browser");
                         LaunchTorBrowser();
                     });
                 });
@@ -137,21 +136,20 @@ namespace WinVPN.MVVM.ViewModel
                 process.StartInfo.FileName = torExecutablePath;
                 process.StartInfo.WorkingDirectory = Path.GetDirectoryName(torExecutablePath);
 
-                Debug.WriteLine($"Launching Tor Browser from: {torExecutablePath}");
-
+                FileLogger.Log($"Trying to launch Tor Browser from {torExecutablePath}");
                 try
                 {
                     process.Start();
-                    Debug.WriteLine("Tor Browser launched successfully!");
+                    FileLogger.Log("Tor Browser launched successfully!");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error launching Tor Browser: {ex.Message}");
+                    FileLogger.Log($"Error launching Tor Browser: {ex.Message}");
                 }
             }
             else
             {
-                Debug.WriteLine("Tor Browser executable not found!");
+                FileLogger.Log("Tor Browser executable not found!");
             }
         }
     }

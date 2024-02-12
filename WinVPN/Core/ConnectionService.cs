@@ -16,33 +16,29 @@ namespace WinVPN.Core
             process.StartInfo.FileName = "cmd.exe";
             process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
             string connectionString = $"/c rasdial {server.Id} {username} {passwordString} /phonebook:./VPN/{server.Id}.pbk";
-
-            // TODO: Remove debug
-            Debug.WriteLine(connectionString);
             process.StartInfo.Arguments = connectionString;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
 
             process.Start();
             process.WaitForExit();
-            
-            // TODO: Add a logger instead of Debug.WriteLine
+
             switch (process.ExitCode)
             {
                 case 0:
-                    Debug.WriteLine("Success!");
+                    FileLogger.Log($"Successfully connected to {server.Server}");
                     _connectionStatus = ConnectionStatus.CONNECTED;
                     break;
                 case 691:
-                    Debug.WriteLine("Invalid username or password!");
+                    FileLogger.Log($"Invalid credentials for {server.Server}");
                     _connectionStatus = ConnectionStatus.INVALID_CREDENTIALS;
                     break;
                 case 868:
-                    Debug.WriteLine("Host unreachable!");
+                    FileLogger.Log("The remote server is not reachable");
                     _connectionStatus = ConnectionStatus.HOST_UNREACHABLE;
                     break;
                 default:
-                    Debug.WriteLine($"Connection error: {process.ExitCode}");
+                    FileLogger.Log($"Error while connecting to {server.Server}. Code: {process.ExitCode}");
                     _connectionStatus = ConnectionStatus.CONNECTION_ERROR;
                     break;
             }
@@ -64,12 +60,12 @@ namespace WinVPN.Core
 
             if (process.ExitCode == 0)
             {
-                Debug.WriteLine("Disconnected!");
+                FileLogger.Log("Successfully disconnected");
                 _connectionStatus = ConnectionStatus.NOT_CONNECTED;
             }
             else
             {
-                Debug.WriteLine($"Disconnection error: {process.ExitCode}");
+                FileLogger.Log($"Error while disconnecting. Code: {process.ExitCode}");
                 _connectionStatus = ConnectionStatus.CONNECTION_ERROR;
             }
 
