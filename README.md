@@ -19,7 +19,7 @@ WinVPN is a small multipurpose application for Windows that allows you to connec
 
 ## Installation
 
-1. Download the latest version of the application from the [Releases](https://github.com/dan-koller/winvpn/releases)
+1. Download the latest version of the application from the [releases](https://github.com/dan-koller/winvpn/releases)
 2. Extract the contents of the ZIP file to a folder of your choice
 3. Run `WinVPN.exe`
 
