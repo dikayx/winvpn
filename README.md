@@ -12,6 +12,10 @@ WinVPN is a small multipurpose application for Windows that allows you to connec
 -   Connect to a VPN server using VPNBook services.
 -   Connect to Tor services by launching the Tor Browser if it is installed on the system.
 
+### Streaming
+
+You can only use the US & UK servers for streaming. Check the [VPNBook](https://www.vpnbook.com/) website for more information.
+
 ## Requirements
 
 -   Windows 10 or later (64-bit)
