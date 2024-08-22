@@ -23,7 +23,7 @@ You can only use the US & UK servers for streaming. Check the [VPNBook](https://
 
 ## Installation
 
-1. Download the latest version of the application from the [releases](https://github.com/dan-koller/winvpn/releases)
+1. Download the latest version of the application from the [releases](https://github.com/dikayx/winvpn/releases)
 2. Extract the contents of the ZIP file to a folder of your choice
 3. Run `WinVPN.exe`
 
